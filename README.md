@@ -3,7 +3,9 @@
 A simple, full-featured blogging application built with Django.
 
 ## Features
-
+<p align="center">
+  <img src="Screenshot 2025-11-30 155405.png" alt="Screenshot" />
+</p>
 *   **User Authentication:**
     *   User Registration
     *   Login / Logout
