@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<div class="flex-center" style="min-height: 50vh;">
+    <div class="card" style="text-align: center; max-width: 400px; padding: var(--spacing-xl);">
+        <h2 style="margin-bottom: var(--spacing-md);">You have been logged out</h2>
+        <p style="margin-bottom: var(--spacing-lg); color: var(--text-light);">Thanks for visiting! We hope to see you
+            back soon.</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Log In Again</a>
+    </div>
+</div>
+{% endblock content %}

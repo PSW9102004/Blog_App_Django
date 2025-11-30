@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto; padding: var(--spacing-xl);">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4"
+                style="font-size: 1.5rem; margin-bottom: var(--spacing-md); padding-bottom: var(--spacing-xs);">Blog
+                Post</legend>
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Post</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

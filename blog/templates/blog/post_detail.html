@@ -1,0 +1,50 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<article class="card" style="max-width: 800px; margin: 0 auto; padding: var(--spacing-xl);">
+    <div class="post-meta" style="margin-bottom: var(--spacing-md);">
+        <img class="author-img" src="{{ object.author.profile.image.url }}" alt="{{ object.author }}">
+        <div>
+            <a href="#" style="font-weight: 600; color: var(--text-dark);">{{ object.author }}</a>
+            <div style="font-size: 0.8rem;">{{ object.date_posted|date:"F d, Y" }}</div>
+        </div>
+        {% if object.author == user %}
+        <div style="margin-left: auto;">
+            <a class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"
+                href="{% url 'post-update' object.id %}">Update</a>
+            <a class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"
+                href="{% url 'post-delete' object.id %}">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <h1 style="font-size: 2.5rem; margin-bottom: var(--spacing-md);">{{ object.title }}</h1>
+
+    <div class="post-content" style="font-size: 1.1rem; line-height: 1.8; color: var(--text-dark);">
+        {{ object.content|linebreaks }}
+    </div>
+</article>
+
+<div style="max-width: 800px; margin: var(--spacing-xl) auto;">
+    <div class="flex-between" style="margin-bottom: var(--spacing-md);">
+        <h3>Comments</h3>
+        <a href="{% url 'add-comment' object.id %}" class="btn btn-primary">Add Comment</a>
+    </div>
+
+    {% if object.comments.all %}
+    <div class="grid" style="gap: var(--spacing-sm);">
+        {% for comment in object.comments.all %}
+        <div class="card" style="padding: var(--spacing-md);">
+            <div style="font-weight: 600; margin-bottom: var(--spacing-xs);">
+                {{ comment.author }}
+                <span style="font-weight: 400; color: var(--text-light); font-size: 0.8rem;">- {{
+                    comment.date_posted|date:"F d, Y" }}</span>
+            </div>
+            <p>{{ comment.content|linebreaks }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color: var(--text-light); font-style: italic;">No comments yet. Be the first to share your thoughts!</p>
+    {% endif %}
+</div>
+{% endblock content %}
