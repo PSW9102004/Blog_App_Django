@@ -2,34 +2,45 @@
 
 A simple, full-featured blogging application built with Django.
 
-## Features
 <p align="center">
   <img src="Screenshot 2025-11-30 155405.png" alt="Screenshot" />
 </p>
-*   **User Authentication:**
+
+## Features
+
+**User Authentication:**
+
     *   User Registration
     *   Login / Logout
     *   Profile Management (Update username, email, and profile picture)
-*   **Blog Posts:**
+**Blog Posts:**
+
     *   Create, Read, Update, and Delete (CRUD) posts
     *   View all posts on the home page
     *   View individual post details
     *   Pagination for posts
-*   **Comments:**
+**Comments:**
+    
     *   Add comments to posts
-*   **Permissions:**
+**Permissions:**
+    
     *   Only authors can edit or delete their own posts
     *   Login required for creating posts and comments
-*   **UI/UX:**
+**UI/UX:**
+    
     *   Clean and responsive design using custom CSS and Bootstrap (via Crispy Forms)
 
 ## Technologies Used
 
-*   **Backend:** Django (Python)
-*   **Database:** SQLite (default)
-*   **Frontend:** HTML, CSS, Django Templates
-*   **Forms:** Django Crispy Forms (Bootstrap 4/5)
-*   **Image Processing:** Pillow
+   **Backend:** Django (Python)
+   
+   **Database:** SQLite (default)
+   
+   **Frontend:** HTML, CSS, Django Templates
+   
+   **Forms:** Django Crispy Forms (Bootstrap 4/5)
+   
+   **Image Processing:** Pillow
 
 ## Installation
 
