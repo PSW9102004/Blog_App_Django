@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Tag
+from .models import Post, Comment
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -8,10 +8,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('title', 'subtitle', 'content', 'author__username')
     prepopulated_fields = {'slug': ('title',)}
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug')
-    search_fields = ('name',)
+# The TagAdmin class is removed because django-taggit handles tags internally.
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
