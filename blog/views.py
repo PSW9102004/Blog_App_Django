@@ -11,12 +11,13 @@ from django.views.generic import (
     DeleteView
 )
 from django.urls import reverse
-from .models import Post, Tag
+from taggit.models import Tag # <--- CHANGED: Import from taggit, not .models
+from .models import Post
 from .forms import CommentForm, PostForm
 
 class PostListView(ListView):
     model = Post
-    template_name = 'blog/post_list.html'  # <app>/<model>_<viewtype>.html
+    template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
     paginate_by = 6
@@ -41,6 +42,7 @@ class PostDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
+        # Allow authors to see their own drafts
         if self.request.user.is_authenticated:
             return (
                 Post.objects.filter(
@@ -50,6 +52,7 @@ class PostDetailView(DetailView):
                 .prefetch_related('tags', 'likes', 'bookmarks', 'comments', 'comments__author')
                 .distinct()
             )
+        # Everyone else only sees published posts
         return (
             Post.objects.filter(status=Post.Status.PUBLISHED)
             .select_related('author', 'author__profile')
@@ -121,6 +124,7 @@ class TagPostListView(ListView):
     paginate_by = 6
 
     def get_queryset(self):
+        # We find the Tag object from taggit
         self.tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
         return (
             Post.objects.filter(tags=self.tag, status=Post.Status.PUBLISHED)
