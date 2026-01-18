@@ -86,8 +86,9 @@
         <div class="card" style="padding: var(--spacing-md);">
             <div style="font-weight: 600; margin-bottom: var(--spacing-xs);">
                 {{ comment.author }}
-                <span style="font-weight: 400; color: var(--text-light); font-size: 0.8rem;">- {{
-                    comment.date_posted|date:"F d, Y" }}</span>
+                <span style="font-weight: 400; color: var(--text-light); font-size: 0.8rem;"> 
+                    - {{comment.date_posted|date:"F d, Y" }}
+                </span>
             </div>
             <p>{{ comment.content|linebreaks }}</p>
         </div>
