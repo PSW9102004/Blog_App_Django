@@ -1,9 +1,11 @@
 {% extends "blog/base.html" %}
 {% block content %}
 <section class="hero" style="text-align: center; margin-bottom: var(--spacing-xl); padding: var(--spacing-xl) 0;">
-    <h1 style="font-size: 3rem; margin-bottom: var(--spacing-sm);">Welcome to the Blog</h1>
-    <p style="font-size: 1.2rem; color: var(--text-light); max-width: 600px; margin: 0 auto;">
-        Discover stories, thinking, and expertise from writers on any topic.
+    <h1 style="font-size: 2.6rem; margin-bottom: var(--spacing-sm);">
+        {{ page_title|default:"Explore fresh ideas and perspectives" }}
+    </h1>
+    <p style="font-size: 1.1rem; color: var(--text-light); max-width: 640px; margin: 0 auto;">
+        {{ page_description|default:"Follow topics you care about and stay inspired." }}
     </p>
 </section>
 
@@ -14,7 +16,9 @@
             <img class="author-img" src="{{ post.author.profile.image.url }}" alt="{{ post.author }}">
             <div>
                 <a href="#" style="font-weight: 600; color: var(--text-dark);">{{ post.author }}</a>
-                <div style="font-size: 0.8rem;">{{ post.date_posted|date:"F d, Y" }}</div>
+                <div style="font-size: 0.8rem;">
+                    {{ post.date_posted|date:"F d, Y" }} • {{ post.read_time }} min read
+                </div>
             </div>
         </div>
         <h2 class="post-title"><a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></h2>
@@ -22,9 +26,24 @@
         <p class="post-subtitle">{{ post.subtitle }}</p>
         {% endif %}
         <p class="post-content">{{ post.content|truncatewords:20 }}</p>
-        <a href="{% url 'post-detail' post.slug %}" class="btn btn-outline"
-            style="font-size: 0.9rem; padding: 0.5rem 1rem;">Read Article</a>
+        {% if post.tags.all %}
+        <div class="tag-row">
+            {% for tag in post.tags.all %}
+            <a class="tag-chip" href="{% url 'tag-posts' tag.slug %}">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="post-actions">
+            <a href="{% url 'post-detail' post.slug %}" class="btn btn-outline"
+                style="font-size: 0.9rem; padding: 0.5rem 1rem;">Read Story</a>
+            <span class="action-count">❤️ {{ post.likes.count }}</span>
+        </div>
     </article>
+    {% empty %}
+    <div class="card" style="grid-column: 1 / -1; text-align: center;">
+        <h3>No stories yet</h3>
+        <p style="color: var(--text-light);">Be the first to share something insightful.</p>
+    </div>
     {% endfor %}
 </div>
 

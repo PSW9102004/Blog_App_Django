@@ -6,12 +6,12 @@
         {% csrf_token %}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4"
-                style="font-size: 1.5rem; margin-bottom: var(--spacing-md); padding-bottom: var(--spacing-xs);">Blog
-                Post</legend>
+                style="font-size: 1.5rem; margin-bottom: var(--spacing-md); padding-bottom: var(--spacing-xs);">Story
+                Details</legend>
             {{ form|crispy }}
         </fieldset>
         <div class="form-group">
-            <button class="btn btn-primary" type="submit">Post</button>
+            <button class="btn btn-primary" type="submit">Save Story</button>
         </div>
     </form>
 </div>
