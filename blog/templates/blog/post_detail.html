@@ -1,4 +1,6 @@
 {% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+
 {% block content %}
 <article class="card" style="max-width: 800px; margin: 0 auto; padding: var(--spacing-xl);">
     <div class="post-meta" style="margin-bottom: var(--spacing-md);">
@@ -65,13 +67,21 @@
 </article>
 
 <div style="max-width: 800px; margin: var(--spacing-xl) auto;">
-    <div class="flex-between" style="margin-bottom: var(--spacing-md);">
-        <h3>Comments</h3>
-        <a href="{% url 'add-comment' object.id %}" class="btn btn-primary">Add Comment</a>
+    
+    <div style="margin-bottom: var(--spacing-lg);">
+        <h3 style="margin-bottom: var(--spacing-md);">Comments</h3>
+        {% if user.is_authenticated %}
+            <form id="comment-form" method="POST" action="{% url 'add-comment' object.pk %}">
+                {% csrf_token %}
+                {{ comment_form|crispy }} 
+                <button class="btn btn-primary" style="margin-top: var(--spacing-xs);" type="submit">Post Comment</button>
+            </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+        {% endif %}
     </div>
 
-    {% if object.comments.all %}
-    <div class="grid" style="gap: var(--spacing-sm);">
+    <div id="comments-list" class="grid" style="gap: var(--spacing-sm);">
         {% for comment in object.comments.all %}
         <div class="card" style="padding: var(--spacing-md);">
             <div style="font-weight: 600; margin-bottom: var(--spacing-xs);">
@@ -81,10 +91,56 @@
             </div>
             <p>{{ comment.content|linebreaks }}</p>
         </div>
+        {% empty %}
+        <p id="no-comments-text" style="color: var(--text-light); font-style: italic;">No comments yet. Be the first to share your thoughts!</p>
         {% endfor %}
     </div>
-    {% else %}
-    <p style="color: var(--text-light); font-style: italic;">No comments yet. Be the first to share your thoughts!</p>
-    {% endif %}
+
 </div>
+
+<script>
+    const commentForm = document.getElementById('comment-form');
+    
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page reload
+
+            const formData = new FormData(commentForm);
+
+            fetch(commentForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest', // Tells Django view to return JSON
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 1. Build the HTML string
+                const newCommentHtml = `
+                <div class="card" style="padding: var(--spacing-md);">
+                    <div style="font-weight: 600; margin-bottom: var(--spacing-xs);">
+                        ${data.author}
+                        <span style="font-weight: 400; color: var(--text-light); font-size: 0.8rem;">- 
+                            ${data.date_posted}</span>
+                    </div>
+                    <p>${data.content.replace(/\n/g, "<br>")}</p>
+                </div>
+                `;
+
+                // 2. Remove "No comments" text if it exists
+                const emptyText = document.getElementById('no-comments-text');
+                if (emptyText) emptyText.remove();
+
+                // 3. Insert new comment at the top
+                const commentList = document.getElementById('comments-list');
+                commentList.insertAdjacentHTML('afterbegin', newCommentHtml);
+
+                // 4. Clear the form
+                commentForm.reset();
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+</script>
 {% endblock content %}
