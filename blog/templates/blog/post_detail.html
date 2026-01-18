@@ -10,14 +10,54 @@
         {% if object.author == user %}
         <div style="margin-left: auto;">
             <a class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"
-                href="{% url 'post-update' object.id %}">Update</a>
+                href="{% url 'post-update' object.slug %}">Update</a>
             <a class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"
-                href="{% url 'post-delete' object.id %}">Delete</a>
+                href="{% url 'post-delete' object.slug %}">Delete</a>
         </div>
         {% endif %}
     </div>
 
-    <h1 style="font-size: 2.5rem; margin-bottom: var(--spacing-md);">{{ object.title }}</h1>
+    <h1 style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">{{ object.title }}</h1>
+    {% if object.subtitle %}
+    <p class="post-subtitle" style="margin-bottom: var(--spacing-md);">{{ object.subtitle }}</p>
+    {% endif %}
+    <div class="post-meta" style="margin-bottom: var(--spacing-md); gap: var(--spacing-sm);">
+        <span>{{ object.read_time }} min read</span>
+        <span>•</span>
+        <span>{{ object.likes.count }} claps</span>
+        <span>•</span>
+        <span>{{ object.bookmarks.count }} bookmarks</span>
+        {% if object.status == 'draft' %}
+        <span class="tag-chip">Draft</span>
+        {% endif %}
+    </div>
+
+    {% if object.tags.all %}
+    <div class="tag-row" style="margin-bottom: var(--spacing-md);">
+        {% for tag in object.tags.all %}
+        <a class="tag-chip" href="{% url 'tag-posts' tag.slug %}">{{ tag.name }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <div class="post-actions">
+        <form method="post" action="{% url 'post-like' object.slug %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button class="btn {% if has_liked %}btn-primary{% else %}btn-outline{% endif %}" type="submit">
+                {% if has_liked %}Clapped{% else %}Clap{% endif %}
+            </button>
+        </form>
+        <form method="post" action="{% url 'post-bookmark' object.slug %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button class="btn {% if has_bookmarked %}btn-primary{% else %}btn-outline{% endif %}" type="submit">
+                {% if has_bookmarked %}Bookmarked{% else %}Bookmark{% endif %}
+            </button>
+        </form>
+    </div>
+    {% endif %}
 
     <div class="post-content" style="font-size: 1.1rem; line-height: 1.8; color: var(--text-dark);">
         {{ object.content|linebreaks }}
