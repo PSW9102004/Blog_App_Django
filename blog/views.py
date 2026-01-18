@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timesince import timesince
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
@@ -14,6 +15,7 @@ from django.urls import reverse
 from taggit.models import Tag # <--- CHANGED: Import from taggit, not .models
 from .models import Post
 from .forms import CommentForm, PostForm
+from django.http import JsonResponse
 
 class PostListView(ListView):
     model = Post
@@ -102,9 +104,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+
 @login_required
 def add_comment(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -112,9 +116,21 @@ def add_comment(request, pk):
             comment.post = post
             comment.author = request.user
             comment.save()
+            
+            # If the request comes from JavaScript, return JSON
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'author': comment.author.username,
+                    # Format date here: "January 19, 2026"
+                    'date_posted': comment.date_posted.strftime('%B %d, %Y'),
+                    'content': comment.content
+                })
+            
+            # Fallback for standard form submission (non-JS)
             return redirect('post-detail', slug=post.slug)
     else:
         form = CommentForm()
+        
     return render(request, 'blog/add_comment.html', {'form': form})
 
 class TagPostListView(ListView):
