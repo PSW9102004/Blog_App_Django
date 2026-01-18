@@ -91,6 +91,30 @@ A simple, full-featured blogging application built with Django.
 8.  **Access the app:**
     Open your browser and go to `http://127.0.0.1:8000/`
 
+## Production Deployment (Render)
+
+Set the following environment variables in your deployment platform:
+
+* `DJANGO_SECRET_KEY` - new secret for production.
+* `DJANGO_DEBUG` - set to `False` in production.
+* `DJANGO_ALLOWED_HOSTS` - comma-separated hostnames (e.g. `your-app.onrender.com`).
+* `DJANGO_CSRF_TRUSTED_ORIGINS` - comma-separated HTTPS origins (e.g. `https://your-app.onrender.com`).
+* `DATABASE_URL` - Render-managed Postgres URL.
+
+Recommended Render commands:
+
+```
+pip install -r requirements.txt
+python manage.py collectstatic --noinput
+python manage.py migrate
+```
+
+Start command:
+
+```
+gunicorn my_blog.wsgi:application
+```
+
 ## Usage
 
 *   **Register** a new account.
