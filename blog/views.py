@@ -38,6 +38,9 @@ class PostListView(ListView):
         context['page_description'] = 'Read, write, and connect with writers on any topic.'
         return context
 
+# Ensure this import exists at the top of your file
+from .forms import CommentForm 
+
 class PostDetailView(DetailView):
     model = Post
     slug_field = 'slug'
@@ -63,6 +66,12 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # --- NEW CODE STARTS HERE ---
+        # Pass the empty form to the template so {{ comment_form|crispy }} works
+        context['comment_form'] = CommentForm()
+        # --- NEW CODE ENDS HERE ---
+
         if self.request.user.is_authenticated:
             context['has_liked'] = self.object.likes.filter(pk=self.request.user.pk).exists()
             context['has_bookmarked'] = self.object.bookmarks.filter(pk=self.request.user.pk).exists()
