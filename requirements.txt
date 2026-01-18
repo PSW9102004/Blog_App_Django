@@ -38,3 +38,4 @@ urllib3==2.2.2
 webcolors==24.11.1
 webencodings==0.5.1
 whitenoise==6.11.0
+django-taggit==5.0.1
