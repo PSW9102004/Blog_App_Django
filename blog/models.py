@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.text import slugify
+from taggit.managers import TaggableManager  # <--- Added this import
 
 class Post(models.Model):
     class Status(models.TextChoices):
@@ -16,7 +17,10 @@ class Post(models.Model):
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PUBLISHED)
     read_time = models.PositiveIntegerField(default=1)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    tags = models.ManyToManyField('Tag', related_name='posts', blank=True)
+    
+    # CHANGED: Used TaggableManager instead of ManyToManyField to 'Tag'
+    tags = TaggableManager()
+    
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     bookmarks = models.ManyToManyField(User, related_name='bookmarked_posts', blank=True)
 
@@ -36,16 +40,14 @@ class Post(models.Model):
                 slug = f'{base_slug}-{counter}'
                 counter += 1
             self.slug = slug
+        
+        # Calculate read time
         words = len(self.content.split())
         self.read_time = max(1, round(words / 200))
+        
         super().save(*args, **kwargs)
 
-class Tag(models.Model):
-    name = models.CharField(max_length=40, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
+# DELETED: The 'class Tag' model is gone because django-taggit creates its own tables.
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
