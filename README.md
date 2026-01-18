@@ -3,8 +3,12 @@
 A simple, full-featured blogging application built with Django.
 
 <p align="center">
-  <img src="Screenshot 2025-11-30 155405.png" alt="Screenshot" />
+  <img src="Screenshot from 2026-01-18 23-22-00.png" alt="Screenshot" />
 </p>
+
+## Live Link : 
+
+**https://blog-app-django-15ua.onrender.com/**
 
 ## Features
 
